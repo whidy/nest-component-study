@@ -1,71 +1,93 @@
-import { h, computed } from "vue";
-import { ElInput, ElOption, ElSelect } from "element-plus";
+import { h, toRaw } from "vue";
+import { ElInput, ElOption, ElSelect, ElCascader } from "element-plus";
 
 export default {
+  name: "filter-group",
   props: ["config", "modelValue"],
-  // emit: ["update:modelValue"],
   setup(props) {
-    // const newFilter = computed(() => props.modelValue);
     return () =>
       h(
         "div",
         { class: "test" },
-        // [
-        //   h(ElInput, {
-        //     modelValue: newFilter.value[props.config[0].keyName],
-        //     "onUpdate:modelValue": (value) => {
-        //       newFilter.value[props.config[0].keyName] = value;
-        //     },
-        //   }),
-        //   h(
-        //     ElSelect,
-        //     {
-        //       modelValue: newFilter.value[props.config[1].keyName],
-        //       "onUpdate:modelValue": (value) => {
-        //         newFilter.value[props.config[1].keyName] = value;
-        //       },
-        //     },
-        //     () => [
-        //       h(ElOption, {
-        //         label: props.config[1].options[0].label,
-        //         value: props.config[1].options[0].value,
-        //         key: props.config[1].options[0].value,
-        //       }),
-        //       h(ElOption, {
-        //         label: props.config[1].options[1].label,
-        //         value: props.config[1].options[1].value,
-        //         key: props.config[1].options[0].value,
-        //       }),
-        //     ]
-        //   ),
-        // ],
-
-        // test
         props.config.map((configItem) => {
-          if (configItem.type === "el-input") {
+          const { nestComponentAttributes = {} } = configItem;
+          if (configItem.nestComponentName === "el-input") {
             return h(ElInput, {
               modelValue: props.modelValue[configItem.keyName],
               "onUpdate:modelValue": (value) => {
                 props.modelValue[configItem.keyName] = value;
               },
             });
-          } else if (configItem.type === "el-select") {
+          } else if (configItem.nestComponentName === "el-select") {
             return h(
               ElSelect,
               {
                 modelValue: props.modelValue[configItem.keyName],
+                placeholder: nestComponentAttributes.placeholder,
+                filterable: nestComponentAttributes.filterable,
+                style: `width: ${nestComponentAttributes.width};`,
                 "onUpdate:modelValue": (value) => {
+                  console.log("el-select update", value);
                   props.modelValue[configItem.keyName] = value;
                 },
               },
               () =>
-                configItem.options.map((optionsItem) => {
+                nestComponentAttributes.options.value.map((optionsItem) => {
                   return h(ElOption, {
                     label: optionsItem.label,
                     value: optionsItem.value,
                     key: optionsItem.value,
                   });
                 })
+            );
+          } else if (configItem.nestComponentName === "el-cascader") {
+            return h(
+              ElCascader,
+              {
+                modelValue: props.modelValue[configItem.keyName],
+                options: nestComponentAttributes.options.value,
+                filterable: nestComponentAttributes.filterable,
+                placeholder: nestComponentAttributes["placeholder"],
+                clearable: nestComponentAttributes["clearable"],
+                props: nestComponentAttributes["props"],
+                "collapse-tags": nestComponentAttributes["collapse-tags"],
+                style: `width: ${nestComponentAttributes.width};`,
+                "onUpdate:modelValue": (value) => {
+                  console.log("el-cascader update", value);
+                  props.modelValue[configItem.keyName] = value || "";
+                },
+                onChange: (
+                  () => (value) =>
+                    nestComponentAttributes.onChange(value)
+                )(),
+              },
+              nestComponentAttributes.slot
+                ? {
+                    default: ({ data }) => {
+                      return h(
+                        nestComponentAttributes.slot.tagName,
+                        null,
+                        data.name
+                      );
+                    },
+                  }
+                : null
+
+              // todo 如果有多个child则需要考虑更复杂的场景。
+              // nestComponentAttributes.slots
+              //   ? () => {
+              //       return nestComponentAttributes.slots.map((slot) => {
+              //         console.log("do slot");
+              //         return h(
+              //           slot.slotContent.tagName,
+              //           // slots[slot.slotName]({
+              //           //   data: { a: 1 },
+              //           // })
+              //           { default: () => "default slot" }
+              //         );
+              //       });
+              //     }
+              //   : null
             );
           }
         })

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, toRef } from "vue";
 import HelloWorld from "./components/HelloWorld.vue";
 import nestElInputVue from "./components/nest-elinput.vue";
 import nestElInput from "./components/nest-elinput";
@@ -10,49 +10,167 @@ const syncText = ref("sync");
 const state = reactive({
   filter: {
     title: "hello world",
-    organization_id: 1,
+    organization_id: "",
+    service_version: "",
   },
   option: [
     {
       label: "嘻嘻",
-      value: 1,
+      value: "1",
     },
     {
       label: "谷歌",
-      value: 2,
+      value: "2",
     },
   ],
-  option2: [],
+  callbackOptions: [],
 });
 
-setTimeout(() => {
-  state.option2 = [
+const changeData = (val) => {
+  console.log("changeData", val);
+  state.option = [
     {
-      label: "嘻嘻",
-      value: 1,
+      label: "bbbbbb",
+      value: "1",
     },
     {
-      label: "谷歌",
-      value: 2,
+      label: "xxxxxx",
+      value: "2",
     },
   ];
+};
+
+setTimeout(() => {
+  state.callbackOptions = [
+    {
+      name: "嘻嘻aaa",
+      id: "1",
+      Child: [
+        {
+          name: "icc",
+          id: "1-1",
+          Child: null,
+        },
+      ],
+    },
+    {
+      name: "谷歌",
+      id: "2",
+      Child: null,
+    },
+  ];
+  // state.callbackOptions = [
+  //   {
+  //     value: "guide",
+  //     label: "Guide",
+  //     children: [
+  //       {
+  //         value: "disciplines",
+  //         label: "Disciplines",
+  //         children: [
+  //           {
+  //             value: "consistency",
+  //             label: "Consistency",
+  //           },
+  //           {
+  //             value: "feedback",
+  //             label: "Feedback",
+  //           },
+  //           {
+  //             value: "efficiency",
+  //             label: "Efficiency",
+  //           },
+  //           {
+  //             value: "controllability",
+  //             label: "Controllability",
+  //           },
+  //         ],
+  //       },
+  //       {
+  //         value: "navigation",
+  //         label: "Navigation",
+  //         children: [
+  //           {
+  //             value: "side nav",
+  //             label: "Side Navigation",
+  //           },
+  //           {
+  //             value: "top nav",
+  //             label: "Top Navigation",
+  //           },
+  //         ],
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     value: "resource",
+  //     label: "Resource",
+  //     children: [
+  //       {
+  //         value: "axure",
+  //         label: "Axure Components",
+  //       },
+  //       {
+  //         value: "sketch",
+  //         label: "Sketch Templates",
+  //       },
+  //       {
+  //         value: "docs",
+  //         label: "Design Documentation",
+  //       },
+  //     ],
+  //   },
+  // ];
 }, 1000);
 
 const filterConfig = [
   {
     title: "业务系统名称",
     keyName: "title",
-    placeholder: "请输入名称",
-    type: "el-input",
+    nestComponentName: "el-input",
+    nestComponentAttributes: {
+      placeholder: "请输入名称",
+    },
   },
   {
     title: "业务系统名称",
     keyName: "organization_id",
-    placeholder: "请选择业务系统名称",
-    type: "el-select",
-    width: "300px",
-    filterable: true,
-    options: state.option,
+    nestComponentName: "el-select",
+    nestComponentAttributes: {
+      placeholder: "请选择业务系统名称",
+      width: "300px",
+      filterable: true,
+      options: toRef(state, "option"),
+    },
+  },
+  {
+    title: "所属业务系统",
+    keyName: "service_version",
+    nestComponentName: "el-cascader",
+    nestComponentAttributes: {
+      placeholder: "请输入关键字进行模糊搜索",
+      width: "300px",
+      filterable: true,
+      props: {
+        expandTrigger: "hover",
+        label: "name",
+        value: "id",
+        emitPath: false,
+        children: "Child",
+      },
+      clearable: true,
+      "collapse-tags": true,
+      options: toRef(state, "callbackOptions"),
+      onChange: changeData,
+      slot: { tagName: "span", attributes: {}, children: "" }
+      // slots: [
+      //   {
+      //     slotName: "default",
+      //     slotData: {},
+      //     slotContent: { tagName: "span", attributes: {}, children: "" },
+      //   },
+      // ],
+    },
   },
 ];
 
@@ -62,7 +180,90 @@ const testt = (e) => {
 
 const submit = () => {
   console.log(state.filter);
-}
+};
+
+const testCallback = () => {
+  state.callbackOptions = [
+    // {
+    //   name: "嘻嘻bbb",
+    //   value: "1",
+    //   Child: [
+    //     {
+    //       name: "icc",
+    //       value: "1-1",
+    //       Child: null,
+    //     },
+    //   ],
+    // },
+    // {
+    //   name: "谷歌",
+    //   value: "2",
+    //   Child: null,
+    // },
+    {
+      value: "guide",
+      label: "Guide",
+      children: [
+        {
+          value: "disciplines",
+          label: "Disciplines",
+          children: [
+            {
+              value: "consistency",
+              label: "Consistency",
+            },
+            {
+              value: "feedback",
+              label: "Feedback",
+            },
+            {
+              value: "efficiency",
+              label: "Efficiency",
+            },
+            {
+              value: "controllability",
+              label: "Controllability",
+            },
+          ],
+        },
+        {
+          value: "navigation",
+          label: "Navigation",
+          children: [
+            {
+              value: "side nav",
+              label: "Side Navigation",
+            },
+            {
+              value: "top nav",
+              label: "Top Navigation",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      value: "resource",
+      label: "Resource",
+      children: [
+        {
+          value: "axure",
+          label: "Axure Components",
+        },
+        {
+          value: "sketch",
+          label: "Sketch Templates",
+        },
+        {
+          value: "docs",
+          label: "Design Documentation",
+        },
+      ],
+    },
+  ];
+  console.log(state.callbackOptions.length);
+  console.log(filterConfig[2].nestComponentAttributes.options.length);
+};
 </script>
 
 <template>
@@ -77,6 +278,8 @@ const submit = () => {
   <nest :config="filterConfig" v-model="state.filter"></nest>
   <!-- <HelloWorld msg="Vite + Vue" /> -->
   <el-button @click="submit">submit</el-button>
+
+  <el-button @click="testCallback">测试回调数据响应</el-button>
 </template>
 
 <style scoped>
