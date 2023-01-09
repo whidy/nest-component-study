@@ -162,7 +162,7 @@ const filterConfig = [
       "collapse-tags": true,
       options: toRef(state, "callbackOptions"),
       onChange: changeData,
-      slot: { tagName: "span", attributes: {}, children: "" }
+      slot: { tagName: "span", attributes: {}, children: "" },
       // slots: [
       //   {
       //     slotName: "default",
@@ -170,6 +170,19 @@ const filterConfig = [
       //     slotContent: { tagName: "span", attributes: {}, children: "" },
       //   },
       // ],
+    },
+  },
+  {
+    title: "调用时间",
+    keyName: "time",
+    nestComponentName: "el-date-picker",
+    nestComponentAttributes: {
+      type: "daterange",
+      width: "300px",
+      "start-placeholder": "开始日期",
+      "end-placeholder": "结束日期",
+      "range-separator": "至",
+      "value-format": "YYYY-MM-DD",
     },
   },
 ];
@@ -277,9 +290,11 @@ const testCallback = () => {
   <!-- <nestVue :config="filterConfig" v-model="state.filter"></nestVue> -->
   <nest :config="filterConfig" v-model="state.filter"></nest>
   <!-- <HelloWorld msg="Vite + Vue" /> -->
-  <el-button @click="submit">submit</el-button>
-
   <el-button @click="testCallback">测试回调数据响应</el-button>
+  <div>
+    <el-button @click="submit">submit</el-button>
+    {{ JSON.stringify(state.filter) }}
+  </div>
 </template>
 
 <style scoped>

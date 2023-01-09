@@ -1,5 +1,11 @@
 import { h, toRaw } from "vue";
-import { ElInput, ElOption, ElSelect, ElCascader } from "element-plus";
+import {
+  ElInput,
+  ElOption,
+  ElSelect,
+  ElCascader,
+  ElDatePicker,
+} from "element-plus";
 
 export default {
   name: "filter-group",
@@ -89,6 +95,18 @@ export default {
               //     }
               //   : null
             );
+          } else if (configItem.nestComponentName === "el-date-picker") {
+            return h(ElDatePicker, {
+              modelValue: props.modelValue[configItem.keyName],
+              type: "daterange",
+              "range-separator": nestComponentAttributes["range-separator"],
+              "start-placeholder": nestComponentAttributes["start-placeholder"],
+              "end-placeholder": nestComponentAttributes["end-placeholder"],
+              "value-format": nestComponentAttributes["value-format"],
+              "onUpdate:modelValue": (value) => {
+                props.modelValue[configItem.keyName] = value;
+              },
+            });
           }
         })
       );
