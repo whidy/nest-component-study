@@ -198,6 +198,7 @@ onBeforeMount(() => {
     :config="filterConfig"
     v-model="state.filter"
   ></nest>
+  <div v-else>loading...</div>
   <!-- <HelloWorld msg="Vite + Vue" /> -->
   <el-button @click="testUpdateNest">测试回调数据响应</el-button>
   <div>
