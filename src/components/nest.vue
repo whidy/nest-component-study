@@ -24,6 +24,7 @@
 </template>
 
 <script setup>
+// TODO this is not good practise. don't use it.
 import { h, ref, computed } from "vue";
 import { ElInput, ElOption, ElSelect } from "element-plus";
 const props = defineProps({
@@ -74,4 +75,4 @@ const vnode = () =>
 console.log(vnode());
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped></style>

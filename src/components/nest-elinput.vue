@@ -1,35 +1,29 @@
 <template>
-  <vnode v-if="props.text"></vnode>
-  <vnode v-else></vnode>
+  <div class="box">
+    <vnode></vnode>
+  </div>
 </template>
 
 <script setup>
-import { h, computed } from "vue";
+import { h } from "vue";
 import { ElInput } from "element-plus";
-const props = defineProps(["text", "syncText"]);
-const emit = defineEmits(["syncText", "update:sync-text"]);
-const newText = computed({
-  get: () => props.text,
-  set: (value) => {
-    emit("syncText", value);
-  },
-});
-
-const newSyncText = computed({
-  get: () => props.syncText,
-  set: (value) => {
-    emit("update:sync-text", value);
-  },
-});
+const props = defineProps(["syncText"]);
+const emit = defineEmits(["update:syncText"]);
 const vnode = () =>
   h("div", {}, [
     h(ElInput, {
-      modelValue: props.text ? newText.value : newSyncText.value,
+      modelValue: props["syncText"],
       "onUpdate:modelValue": (value) => {
-        props.text ? (newText.value = value) : (newSyncText.value = value);
+        emit("update:syncText", value);
       },
     }),
   ]);
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+.box {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #eee;
+}
+</style>

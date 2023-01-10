@@ -1,24 +1,16 @@
-import { h, computed } from "vue";
+import { h } from "vue";
 import { ElInput } from "element-plus";
 
 export default {
-  props: ["text"],
-  emit: ["syncText"],
+  props: ["modelValue"],
+  emit: ["update:modelValue"],
   setup(props, { emit }) {
-    const newText = computed({
-      get: () => props.text,
-      set: (val) => {
-        console.log('trigger set');
-        emit("syncText", val);
-      },
-    });
     return () =>
       h("div", {}, [
         h(ElInput, {
-          modelValue: newText.value,
+          modelValue: props.modelValue,
           "onUpdate:modelValue": (value) => {
-            newText.value = value;
-            // return emit("update:modelValue", value);
+            emit("update:modelValue", value);
           },
         }),
       ]);

@@ -1,10 +1,9 @@
 <script setup>
 import { ref, reactive, toRef, onBeforeMount } from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
 import nestElInputVue from "./components/nest-elinput.vue";
 import nestElInput from "./components/nest-elinput";
 import nest from "./components/nest";
-import nestVue from "./components/nest.vue";
+// import nestVue from "./components/nest.vue";
 
 const filterInitDataLoaded = ref(false);
 const text = ref("hello world");
@@ -33,7 +32,7 @@ const testt = (e) => {
 };
 
 const changeData = (val) => {
-  console.log("changeData", val);
+  // console.log("changeData", val);
   state.option = [
     {
       label: "bbbbbb",
@@ -185,21 +184,28 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <!-- <div>nest - el - input - js</div>
-  <nestElInput :text="text" @sync-text="testt"></nestElInput> -->
-  <!-- <div>nest - el - input - vue</div>
-  <nestElInputVue :text="text" @sync-text="testt"></nestElInputVue>
+  <div>nest - el - input - js</div>
+  <nestElInput v-model="text"></nestElInput>
+  <div>{{ text }}</div>
+
+  <br />
+  <br />
+  <br />
+  <div>nest - el - input - vue</div>
   <nestElInputVue v-model:sync-text="syncText"></nestElInputVue>
-  <div>{{ text }}</div> -->
+  <div>{{ syncText }}</div>
 
   <!-- <nestVue :config="filterConfig" v-model="state.filter"></nestVue> -->
+
+  <br />
+  <br />
+  <br />
   <nest
     v-if="filterInitDataLoaded"
     :config="filterConfig"
     v-model="state.filter"
   ></nest>
   <div v-else>loading...</div>
-  <!-- <HelloWorld msg="Vite + Vue" /> -->
   <el-button @click="testUpdateNest">测试回调数据响应</el-button>
   <div>
     <el-button @click="submit">submit</el-button>
@@ -207,16 +213,4 @@ onBeforeMount(() => {
   </div>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+<style scoped></style>
